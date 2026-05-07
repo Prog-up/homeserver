@@ -1,0 +1,30 @@
+http:
+  middlewares:
+    stripprefix-qbittorrent:
+      stripPrefix:
+        prefixes:
+          - "/qbittorrent"
+    stripprefix-files:
+      stripPrefix:
+        prefixes:
+          - "/files"
+    stripprefix-dashdot:
+      stripPrefix:
+        prefixes:
+          - "/dashdot"
+    stripprefix-languagetool:
+      stripPrefix:
+        prefixes:
+          - "/languagetool"
+    stripprefix-jellyseerr:
+      stripPrefix:
+        prefixes:
+          - "/jellyseerr"
+    stripprefix-portainer:
+      stripPrefix:
+        prefixes:
+          - "/portainer"
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true

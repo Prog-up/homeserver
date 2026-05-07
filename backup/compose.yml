@@ -1,0 +1,26 @@
+name: backup
+
+services:
+  borg-backup:
+    image: docker.io/pschiffe/borg:latest
+    container_name: borg-backup
+    restart: unless-stopped
+    environment:
+      - BORG_PASSPHRASE=${BORG_PASSPHRASE}
+    volumes:
+      - /mnt/hdd/borg/repo:/mnt/borg/repo
+      - /mnt/hdd/borg/config:/root/.config/borg
+      - ${DATA_PATH}:/source/data:ro
+      - ${COMMON_PATH}:/source/media:ro
+    security_opt:
+      - no-new-privileges:true
+    # Borg might need some caps if it runs as root inside, but I'll try with ALL drop.
+    # Actually, pschiffe/borg might need root to access files if they have various UIDs.
+    # But since I'm rootless, everything is mapped to enzo anyway.
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: homeserver_proxy

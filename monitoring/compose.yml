@@ -1,0 +1,73 @@
+name: monitoring
+
+services:
+  prometheus:
+    image: docker.io/prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=Host(`${LOCAL_IP}`) && PathPrefix(`/prometheus`)"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.routers.prometheus.tls=true"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+      - "traefik.http.routers.prometheus-ts.rule=Host(`${TAILSCALE_HOST}`) && PathPrefix(`/prometheus`)"
+      - "traefik.http.routers.prometheus-ts.entrypoints=websecure"
+      - "traefik.http.routers.prometheus-ts.tls=true"
+      - "traefik.http.routers.prometheus-ts.service=prometheus"
+
+  grafana:
+    image: docker.io/grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      - GF_SERVER_ROOT_URL=https://${LOCAL_IP}/grafana
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`${LOCAL_IP}`) && PathPrefix(`/grafana`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana-ts.rule=Host(`${TAILSCALE_HOST}`) && PathPrefix(`/grafana`)"
+      - "traefik.http.routers.grafana-ts.entrypoints=websecure"
+      - "traefik.http.routers.grafana-ts.tls=true"
+      - "traefik.http.routers.grafana-ts.service=grafana"
+
+  otel-lgtm:
+    image: docker.io/grafana/otel-lgtm:latest
+    container_name: otel-lgtm
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    # otel-lgtm might need some caps, but I'll try with ALL dropped first.
+    # It also has its own Grafana on 3000, so I'll just not expose it or use a different port if needed.
+    # The prompt says "assign otel-lgtm to internal-only".
+    networks:
+      - proxy
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  proxy:
+    external: true
+    name: homeserver_proxy

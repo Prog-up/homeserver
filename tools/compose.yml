@@ -1,0 +1,86 @@
+name: tools
+
+services:
+  languagetool:
+    image: docker.io/erikvl87/languagetool:latest
+    container_name: languagetool
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.languagetool.rule=Host(`${LOCAL_IP}`) && PathPrefix(`/languagetool`)"
+      - "traefik.http.routers.languagetool.entrypoints=websecure"
+      - "traefik.http.routers.languagetool.tls=true"
+      - "traefik.http.routers.languagetool.middlewares=stripprefix-languagetool@file"
+      - "traefik.http.services.languagetool.loadbalancer.server.port=8010"
+
+  filebrowser:
+    image: docker.io/filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    command: [ "-d", "/database/filebrowser.db", "-c", "/config/settings.json", "-p", "80", "--baseurl", "/files" ]
+    volumes:
+      - ${COMMON_PATH}:/srv
+      - ${DATA_PATH}/filebrowser:/database
+      - ${COMMON_PATH}/configs/filebrowser:/config
+    networks:
+      - proxy
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.filebrowser.rule=Host(`${LOCAL_IP}`) && PathPrefix(`/files`)"
+      - "traefik.http.routers.filebrowser.entrypoints=websecure"
+      - "traefik.http.routers.filebrowser.tls=true"
+      - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
+
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    container_name: homarr
+    restart: unless-stopped
+    environment:
+      - SECRET_ENCRYPTION_KEY=${HOMARR_SECRET_ENCRYPTION_KEY}
+    volumes:
+      - /home/enzo/homeserver/homarr/appdata:/app/data
+      - /run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homarr.rule=Host(`${LOCAL_IP}`) && PathPrefix(`/homarr`)"
+      - "traefik.http.routers.homarr.entrypoints=websecure"
+      - "traefik.http.routers.homarr.tls=true"
+      - "traefik.http.services.homarr.loadbalancer.server.port=7575"
+      - "traefik.http.routers.homarr-ts.rule=Host(`${TAILSCALE_HOST}`) && PathPrefix(`/homarr`)"
+      - "traefik.http.routers.homarr-ts.entrypoints=websecure"
+      - "traefik.http.routers.homarr-ts.tls=true"
+      - "traefik.http.routers.homarr-ts.service=homarr"
+
+  dashdot:
+    image: docker.io/mauricenino/dashdot:latest
+    container_name: dashdot
+    restart: unless-stopped
+    volumes:
+      - /:/mnt/host:ro
+    networks:
+      - proxy
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashdot.rule=Host(`${LOCAL_IP}`) && PathPrefix(`/dashdot`)"
+      - "traefik.http.routers.dashdot.entrypoints=websecure"
+      - "traefik.http.routers.dashdot.tls=true"
+      - "traefik.http.routers.dashdot.middlewares=stripprefix-dashdot@file"
+      - "traefik.http.services.dashdot.loadbalancer.server.port=3001"
+
+networks:
+  proxy:
+    external: true
+    name: homeserver_proxy
