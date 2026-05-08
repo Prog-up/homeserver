@@ -12,8 +12,6 @@ services:
     depends_on:
       - redis
       - database
-    healthcheck:
-      disable: false
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -48,8 +46,6 @@ services:
     volumes:
       - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
     shm_size: 128mb
-    healthcheck:
-      disable: false
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
