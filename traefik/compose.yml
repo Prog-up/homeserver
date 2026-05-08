@@ -19,6 +19,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    group_add:
+      - ${DOCKER_ID}
     networks:
       - proxy
       

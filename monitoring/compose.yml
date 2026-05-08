@@ -46,3 +46,8 @@ volumes:
   model-cache:
   prometheus-data:
   grafana-data:
+
+networks:
+  proxy:
+    external: true
+    name: homeserver_proxy

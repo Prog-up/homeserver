@@ -20,9 +20,9 @@ entryPoints:
         readTimeout: 600s
         idleTimeout: 600s
   prometheus:
-    address: "9090"
+    address: ":9090"
   grafana:
-    address: "3000"
+    address: ":3000"
 
 providers:
   docker:
