@@ -10,9 +10,11 @@ api:
 
 entryPoints:
   web:
-    address: ":80"
+    address: ":8000"
   websecure:
-    address: ":443"
+    address: ":8443"
+  web-immich:
+    address: ":2283"
 
 providers:
   docker:

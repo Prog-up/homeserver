@@ -4,9 +4,12 @@ services:
   traefik:
     image: dhi.io/traefik:3
     container_name: traefik
+    user: "0:0"
     ports:
-      - "80:80"
+      - "80:8000"
+      - "443:8443"
       - "8080:8080"
+      - "2283:2283"
     volumes:
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - /run/user/${PUID}/podman/podman.sock:/var/run/docker.sock
