@@ -17,3 +17,6 @@ dirs=(
 for d in "${dirs[@]}"; do
   mkdir -p "$d"
 done
+
+ln -s .env immich/.env
+ln -s .env traefik/.env
