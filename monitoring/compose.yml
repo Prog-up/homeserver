@@ -1,0 +1,53 @@
+name: monitoring
+
+services:
+  immich-prometheus:
+    container_name: immich_prometheus
+    image: prom/prometheus
+    volumes:
+      # the Prometheus configuration file - a barebones one is provided to get started
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      # a named volume defined in the bottom of the Compose file; it can also be a mounted folder
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.entrypoints=prometheus"
+      - "traefik.http.routers.prometheus.rule=Host(`${LOCAL_IP}`) || Host(`localhost`) || Host(`127.0.0.1`) || Host(`${TAILSCALE_HOST}`)"
+      - "traefik.http.routers.prometheus.tls=true"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+  
+  immich-grafana:
+    container_name: immich_grafana
+    command: ['./run.sh', '-disable-reporting'] # this is to disable Grafana's telemetry
+    image: grafana/grafana
+    volumes:
+      # stores your pretty dashboards and panels
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.entrypoints=prometheus"
+      - "traefik.http.routers.grafana.rule=Host(`${LOCAL_IP}`) || Host(`localhost`) || Host(`127.0.0.1`) || Host(`${TAILSCALE_HOST}`)"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+ 
+# TODO: Add Loki for logs
+
+volumes:
+  model-cache:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  proxy:
+    external: true
+    name: homeserver_proxy

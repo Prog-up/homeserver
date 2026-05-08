@@ -15,6 +15,14 @@ entryPoints:
     address: ":8443"
   web-immich:
     address: ":2283"
+    transport:
+      respondingTimeouts:
+        readTimeout: 600s
+        idleTimeout: 600s
+  prometheus:
+    address: ":9090"
+  grafana:
+    address: ":3000"
 
 providers:
   docker:
