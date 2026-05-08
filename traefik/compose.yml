@@ -1,0 +1,24 @@
+name: traefik
+
+services:
+  traefik:
+    image: dhi.io/traefik:3
+    container_name: traefik
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - /run/user/${PUID}/podman/podman.sock:/var/run/docker.sock
+    env_file:
+      - .env
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+      
+networks:
+  proxy:
+    external: true
+    name: homeserver_proxy
