@@ -19,10 +19,10 @@ for d in "${dirs[@]}"; do
   mkdir -p "$d"
 done
 
-ln -s "/home/$USER/homerserver/.env" immich/.env
-ln -s "/home/$USER/homerserver/.env" traefik/.env
-ln -s "/home/$USER/homerserver/.env" monitoring/.env
-ln -s "/home/$USER/homerserver/.env" pihole/.env
+ln -s "/home/$USER/homeserver/.env" immich/.env
+ln -s "/home/$USER/homeserver/.env" traefik/.env
+ln -s "/home/$USER/homeserver/.env" monitoring/.env
+ln -s "/home/$USER/homeserver/.env" pihole/.env
 
 # TODO: Install tlp, edit /etc/tlp.conf: 
 # START_CHARGE_THRESH_BAT0=75
