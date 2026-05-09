@@ -5,8 +5,7 @@ log:
   level: INFO
 
 api:
-  dashboard: true
-  insecure: true # FIXME: false
+  dashboard: false
 
 entryPoints:
   web:
@@ -22,6 +21,8 @@ entryPoints:
       respondingTimeouts:
         readTimeout: 600s
         idleTimeout: 600s
+  pihole:
+    address: ":8081"
   prometheus:
     address: ":9090"
   grafana:
