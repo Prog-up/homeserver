@@ -4,13 +4,13 @@ services:
   traefik:
     image: dhi.io/traefik:3
     container_name: traefik
+    user: :${DOCKER_ID}
     ports:
-      - "80:8000"
-      - "443:8443"
+      - "80:80"
+      - "443:443"
       - "8080:8080"
+      - "8081:8081" # Pi-hole dashboard
       - "2283:2283"
-      - "3000:3000"
-      - "9090:9090"
     volumes:
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock
@@ -19,8 +19,6 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    group_add:
-      - ${DOCKER_ID}
     networks:
       - proxy
       

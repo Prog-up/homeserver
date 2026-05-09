@@ -5,20 +5,24 @@ log:
   level: INFO
 
 api:
-  dashboard: true
-  insecure: true # FIXME: false
+  dashboard: false
 
 entryPoints:
   web:
-    address: ":8000"
+    address: ":80"
+      respondingTimeouts:
+        readTimeout: 600s
+        idleTimeout: 600s
   websecure:
-    address: ":8443"
-  web-immich:
+    address: ":443"
+  immich:
     address: ":2283"
     transport:
       respondingTimeouts:
         readTimeout: 600s
         idleTimeout: 600s
+  pihole:
+    address: ":8081"
   prometheus:
     address: ":9090"
   grafana:

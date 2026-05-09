@@ -22,10 +22,14 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.immich.entrypoints=web-immich"
-      - "traefik.http.routers.immich.rule=Host(`${LOCAL_IP}`) || Host(`localhost`) || Host(`127.0.0.1`) || Host(`${TAILSCALE_HOST}`)"
-      - "traefik.http.routers.immich.tls=true"
-      - "traefik.http.services.immich.loadbalancer.server.port=2283"
+      # Local Router (HTTP)
+      - "traefik.http.routers.immich-local.entrypoints=web"
+      - "traefik.http.routers.immich-local.rule=Host(`${LOCAL_IP}`) || Host(`localhost`) || Host(`127.0.0.1`)"
+      - "traefik.http.routers.immich-local.tls=false"
+      # VPN Router (HTTPS)
+      - "traefik.http.routers.immich-vpn.entrypoints=immich"
+      - "traefik.http.routers.immich-vpn.rule=Host(`${TAILSCALE_HOST}`)"
+      - "traefik.http.routers.immich-vpn.tls=true"
 
   redis:
     container_name: immich_redis
