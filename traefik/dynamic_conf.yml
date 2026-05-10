@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: /certs/homeserver.tail94e96e.ts.net.crt
+      keyFile: /certs/homeserver.tail94e96e.ts.net.key

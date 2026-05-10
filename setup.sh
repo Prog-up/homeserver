@@ -12,7 +12,8 @@ echo "[+] Creating directory tree..."
 dirs=(
   "$DATA_PATH/immich/upload"
   "$DATA_PATH/immich/postgres"
-  "$DATA_PATJ/pihole/etc-pihole"
+  "$DATA_PATH/pihole/etc-pihole"
+  "$DATA_PATH/traefik/certs"
 )
 
 for d in "${dirs[@]}"; do

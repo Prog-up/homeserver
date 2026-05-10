@@ -34,6 +34,9 @@ providers:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
     network: homeserver_proxy
+  file:
+  filename: /etc/traefik/dynamic_conf.yml
+  watch: true
 
 # Enable insecure backends (e.g. Portainer HTTPS)
 serversTransport:
