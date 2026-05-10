@@ -12,17 +12,18 @@ echo "[+] Creating directory tree..."
 dirs=(
   "$DATA_PATH/immich/upload"
   "$DATA_PATH/immich/postgres"
-  "$DATA_PATJ/pihole/etc-pihole"
+  "$DATA_PATH/pihole/etc-pihole"
+  "$DATA_PATH/traefik/certs"
 )
 
 for d in "${dirs[@]}"; do
   mkdir -p "$d"
 done
 
-ln -s "/home/$USER/homerserver/.env" immich/.env
-ln -s "/home/$USER/homerserver/.env" traefik/.env
-ln -s "/home/$USER/homerserver/.env" monitoring/.env
-ln -s "/home/$USER/homerserver/.env" pihole/.env
+ln -s "/home/$USER/homeserver/.env" immich/.env
+ln -s "/home/$USER/homeserver/.env" traefik/.env
+ln -s "/home/$USER/homeserver/.env" monitoring/.env
+ln -s "/home/$USER/homeserver/.env" pihole/.env
 
 # TODO: Install tlp, edit /etc/tlp.conf: 
 # START_CHARGE_THRESH_BAT0=75
