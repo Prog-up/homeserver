@@ -38,10 +38,9 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.entrypoints=websecure"
+      - "traefik.http.routers.pihole.entrypoints=pihole"
       - "traefik.http.routers.pihole.rule=Host(`${LOCAL_IP}`) || Host(`localhost`) || Host(`127.0.0.1`) || Host(`${TAILSCALE_HOST}`)"
       - "traefik.http.routers.pihole.tls=true"
-      - "traefik.http.services.pihole.loadbalancer.server.port=8080"
 
 networks:
   proxy:
